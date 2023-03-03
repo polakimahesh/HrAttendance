@@ -9,6 +9,7 @@ public class UserUpdateDto{
     private  int usersId;
     private  String name;
     private String designation;
+    private String email;
     private  long mobileNo;
     private String department;
 }

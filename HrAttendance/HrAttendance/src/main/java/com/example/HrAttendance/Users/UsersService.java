@@ -57,6 +57,7 @@ public class UsersService {
             users.setName(userUpdateDto.getName());
             users.setDepartment(userUpdateDto.getDepartment());
             users.setDesignation(userUpdateDto.getDesignation());
+            users.setEmail(userUpdateDto.getEmail());
             users.setMobileNo(userUpdateDto.getMobileNo());
             usersRepository.save(users);
             response1.put("message","Update Employee id "+userUpdateDto.getUsersId()+", Successfully!");

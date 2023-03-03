@@ -1,10 +1,11 @@
 package com.example.HrAttendance.Users;
 
 import lombok.*;
-
+import org.hibernate.validator.constraints.UniqueElements;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
@@ -21,9 +22,13 @@ public class Users {
     private String name;
     @NotBlank
     private String designation;
+    @NotNull
+    @Column(unique = true)
     private  long mobileNo;
     @Email
+    @Column(unique = true)
     private String email;
+    @NotBlank
     private String department;
 
 }
