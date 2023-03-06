@@ -11,9 +11,7 @@ public class CheckInRequestDto {
     private int attendanceId;
     private int userId;
     private LocalDateTime date;
-
     private String attendanceStatus;
-
     private LocalDateTime inTime;
 
 

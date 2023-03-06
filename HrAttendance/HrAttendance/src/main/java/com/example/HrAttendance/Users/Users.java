@@ -31,4 +31,6 @@ public class Users {
     @NotBlank
     private String department;
 
+    private Boolean isAdmin;
+
 }

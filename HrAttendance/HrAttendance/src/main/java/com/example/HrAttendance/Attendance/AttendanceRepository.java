@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance,Integer> {
     List<Attendance> findByUserId(int userId);
-    @Query(value = "select * from attendance a where Date(a.date) = :date", nativeQuery = true)
-    Attendance findByDate(@Param("date") LocalDate date);
+    @Query(value = "select * from attendance a where Date(a.date) = :date and a.user_id =:userId", nativeQuery = true)
+    Attendance findByUserIdAndDate(@Param("userId") int userID,@Param("date") LocalDate date);
 
 
 
