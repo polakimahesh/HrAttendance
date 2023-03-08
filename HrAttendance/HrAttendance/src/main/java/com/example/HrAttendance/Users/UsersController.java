@@ -1,5 +1,6 @@
 package com.example.HrAttendance.Users;
 
+import com.example.HrAttendance.Dto.AdminResponseDto;
 import com.example.HrAttendance.Dto.DeleteUserDto;
 import com.example.HrAttendance.Dto.UserUpdateDto;
 import com.example.HrAttendance.Dto.UsersDto;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,7 @@ public class UsersController {
     }
     //create user
     @PostMapping("/register-employee")
-    public ResponseEntity<Users> createUsers(@RequestBody UsersDto usersDto){
+    public ResponseEntity<Users> createUsers(@Valid @RequestBody UsersDto usersDto){
         return  new ResponseEntity<>(usersService.createUsers(usersDto),HttpStatus.CREATED);
     }
     //get single user with specific id
@@ -52,5 +54,14 @@ public class UsersController {
             return ResponseEntity.ok(user.get("message"));
         }else
             return ResponseEntity.badRequest().body(user.get("message"));
+    }
+
+    @PostMapping("/admin-attendance-response")
+    public ResponseEntity<Object> adminAttendanceResponse(@RequestBody AdminResponseDto adminResponseDto){
+        var adminResponse=usersService.adminAttendanceResponse(adminResponseDto);
+        if(Boolean.TRUE.equals(adminResponse.get("isSuccess"))){
+            return ResponseEntity.ok(adminResponse.get("message"));
+        }else
+            return ResponseEntity.badRequest().body(adminResponse.get("message"));
     }
 }

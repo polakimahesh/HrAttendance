@@ -12,4 +12,5 @@ public class UserUpdateDto{
     private String email;
     private  long mobileNo;
     private String department;
+    private Boolean isAdmin;
 }

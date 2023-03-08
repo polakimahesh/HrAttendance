@@ -40,7 +40,7 @@ public class AttendanceController {
 
     @PostMapping("/attendance-update-request")
     public ResponseEntity<Object> requestForAttendanceUpdate(@RequestBody AttendanceUpdateDto attendanceUpdateDto){
-        var attendance=attendanceService.requestForAttendanceUpdate(attendanceUpdateDto);
+        var attendance=attendanceService.userRequestForAttendanceUpdate(attendanceUpdateDto);
         if(Boolean.TRUE.equals(attendance.get("isSuccess"))){
             return ResponseEntity.ok(attendance.get("message"));
         }else
@@ -57,6 +57,13 @@ public class AttendanceController {
             return ResponseEntity.ok(getAttendance.get("message"));
         }else
             return ResponseEntity.badRequest().body(getAttendance.get("message"));
-
+    }
+    @PostMapping("/get-no-of-days-present-with-specific-user")
+    public ResponseEntity<Object> getNoOfDaysPresentWithSpecificUser(@RequestBody GetWorkingDaysDto getWorkingDaysDto){
+        var attendance =attendanceService.getNoOfDaysPresentWithSpecificUser(getWorkingDaysDto);
+        if(Boolean.TRUE.equals(attendance.get("isSuccess"))){
+            return ResponseEntity.ok(attendance.get("message"));
+        }else
+            return ResponseEntity.badRequest().body(attendance.get("message"));
     }
 }

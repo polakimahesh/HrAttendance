@@ -18,19 +18,19 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY,generator = "port_gen")
     private  int id;
-    @NotBlank
+
     private String name;
-    @NotBlank
+
     private String designation;
-    @NotNull
+
     @Column(unique = true)
     private  long mobileNo;
-    @Email
+
     @Column(unique = true)
     private String email;
-    @NotBlank
-    private String department;
 
+    private String department;
+    @Column(columnDefinition = "boolean default false")
     private Boolean isAdmin;
 
 }
