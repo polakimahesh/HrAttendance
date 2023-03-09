@@ -1,10 +1,6 @@
 package com.example.HrAttendance.Users;
 
-import com.example.HrAttendance.Dto.AdminResponseDto;
-import com.example.HrAttendance.Dto.DeleteUserDto;
-import com.example.HrAttendance.Dto.UserUpdateDto;
-import com.example.HrAttendance.Dto.UsersDto;
-import org.hibernate.sql.Delete;
+import com.example.HrAttendance.Dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -63,5 +59,13 @@ public class UsersController {
             return ResponseEntity.ok(adminResponse.get("message"));
         }else
             return ResponseEntity.badRequest().body(adminResponse.get("message"));
+    }
+    @PostMapping("/admin-leaves-response")
+    public  ResponseEntity<Object> adminResponseByUserLeaves(@RequestBody LeavesResponseDto leavesResponseDto){
+        var adminResponseForLeaves =usersService.adminResponseByUserLeaves(leavesResponseDto);
+        if(Boolean.TRUE.equals(adminResponseForLeaves.get("isSuccess"))){
+            return ResponseEntity.ok(adminResponseForLeaves.get("message"));
+        }else
+            return ResponseEntity.badRequest().body(adminResponseForLeaves.get("message"));
     }
 }

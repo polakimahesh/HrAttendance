@@ -138,7 +138,7 @@ public class AttendanceService {
                 attendanceUser1.setUserId(attendanceUpdateDto.getUserId());
                 attendanceUser1.setDate(LocalDate.parse((attendanceUpdateDto.getDate().format(dateTimeFormatter))));
                 attendanceUserRepository.save(attendanceUser1);
-                response.put("isSuccess", false);
+                response.put("isSuccess", true);
                 response.put("message", attendanceUser1);
             } else {
                 response1.put("message", "already update " + attendanceUpdateDto.getUserId() + ", id!");
@@ -151,6 +151,9 @@ public class AttendanceService {
         response.put("message",response1);
         return response;
     }
+
+
+
     public  List<AttendanceUser> getListOfAllAttendanceUsers(){
         return attendanceUserRepository.findAll();
     }

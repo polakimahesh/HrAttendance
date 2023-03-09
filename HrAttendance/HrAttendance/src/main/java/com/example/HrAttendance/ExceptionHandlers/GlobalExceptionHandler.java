@@ -29,5 +29,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         response.put("errors",errors);
         return new ResponseEntity<Object>(response,status);
     }
+    @ExceptionHandler(DuplicateEntryException.class)
+    public ResponseEntity<String> handleDuplicateEntryException(DuplicateEntryException ex){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Error code: "+ ex.getErrorCode() +", message: "+ex.getMessage());
+    }
 }
 

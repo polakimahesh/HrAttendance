@@ -4,16 +4,20 @@ package com.example.HrAttendance.Users;
 import com.example.HrAttendance.Attendance.Attendance;
 import com.example.HrAttendance.Attendance.AttendanceRepository;
 import com.example.HrAttendance.Attendance.AttendanceUserRepository;
-import com.example.HrAttendance.Dto.AdminResponseDto;
-import com.example.HrAttendance.Dto.DeleteUserDto;
-import com.example.HrAttendance.Dto.UserUpdateDto;
-import com.example.HrAttendance.Dto.UsersDto;
+import com.example.HrAttendance.Dto.*;
+import com.example.HrAttendance.ExceptionHandlers.DuplicateEntryException;
+import com.example.HrAttendance.Leaves.Leaves;
+import com.example.HrAttendance.Leaves.LeavesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +34,8 @@ public class UsersService {
     private AdminRepository adminRepository;
     @Autowired
     private AttendanceRepository attendanceRepository;
+    @Autowired
+    private LeavesRepository leavesRepository;
 
     public List<Users> getAllUsers(){
         return usersRepository.findAll().stream().sorted(Comparator.comparingInt(Users::getId)).collect(Collectors.toList());
@@ -42,7 +48,11 @@ public class UsersService {
         users.setEmail(usersDto.getUsersEmail());
         users.setDepartment(usersDto.getUsersDepartment());
         users.setIsAdmin(usersDto.getIsAdmin());
-        usersRepository.save(users);
+        try {
+            usersRepository.save(users);
+        }catch(DataIntegrityViolationException ex){
+            throw  new DuplicateEntryException("DUPLICATE_ENTRY_ERROR","duplicate entry error occurred. \n"+ex.getMostSpecificCause());
+        }
         return  users;
     }
     public HashMap<String,Object> getSingleUser(int id){
@@ -110,7 +120,6 @@ public class UsersService {
             response1.put("message","incorrect Employee id "+adminResponseDto.getUserId()+", please enter the valid id!");
             response.put("isSuccess",false);
             response.put("message",response1);
-            return  response;
         }else{
             var attendanceRequest =attendanceUserRepository.findById(adminResponseDto.getAttendanceUserId()).orElse(null);
             if(user.getIsAdmin()){
@@ -141,7 +150,54 @@ public class UsersService {
             }
             response.put("isSuccess",false);
             response.put("message",user);
-            return  response;
         }
+        return  response;
     }
+
+    public HashMap<String,Object> adminResponseByUserLeaves(LeavesResponseDto leavesResponseDto){
+        HashMap<String,Object> response = new HashMap<>();
+        HashMap<String,Object> response1= new HashMap<>();
+        Users users=usersRepository.findById(leavesResponseDto.getUserId()).orElse(null);
+
+        if(users==null){
+            response1.put("message","incorrect Employee id "+leavesResponseDto.getUserId()+", please enter the valid id!");
+            response.put("isSuccess",false);
+            response.put("message",response1);
+        }else {
+            Leaves leaves =leavesRepository.findById(leavesResponseDto.getLeaveId()).orElse(null);
+            if(users.getIsAdmin()){
+                if(leaves==null){
+                    response1.put("message","incorrect user leave request id "+leavesResponseDto.getLeaveId() +", please enter the valid id!");
+                    response.put("isSuccess",false);
+                    response.put("message",response1);
+                }else{
+                    LocalDateTime dateTime =LocalDateTime.now();
+                    Admin admin =new Admin();
+                    admin.setAdminName(users.getName());
+                    admin.setStatus(leavesResponseDto.getStatus()+" attendance id "+leavesResponseDto.getLeaveId() +" his employee id is "+leavesResponseDto.getUserId() );
+                    admin.setApprovedTime(dateTime);
+                    adminRepository.save(admin);
+                    Attendance attendance = new Attendance();
+                    attendance.setUserId(leavesResponseDto.getUserId()); // LocalDate.parse((attendanceUpdateDto.getDate().format(dateTimeFormatter)))
+//                    attendance.setInTime(LocalDateTime.parse(dateTime.format(DateTimeFormatter.ofPattern("0000/00/00"))));
+//                    attendance.setOutTime(LocalDateTime.parse(dateTime.format(DateTimeFormatter.ofPattern("0000/00/00"))));
+                    attendance.setAttendanceStatus(leavesResponseDto.getStatus()+" by "+users.getName());
+                    attendance.setDate(leaves.getDate().atStartOfDay());
+                    attendanceRepository.save(attendance);
+                    leavesRepository.deleteById(leavesResponseDto.getLeaveId());
+                    response.put("isSuccess",true);
+                    response.put("message",admin);
+                }
+                return  response;
+            }
+            response.put("isSuccess",false);
+            response.put("message",users);
+        }
+        return  response;
+    }
+
+
+
+
+
 }

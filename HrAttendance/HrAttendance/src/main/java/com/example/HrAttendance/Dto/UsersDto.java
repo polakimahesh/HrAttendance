@@ -1,13 +1,11 @@
 package com.example.HrAttendance.Dto;
 
+import com.example.HrAttendance.Validation.ValidateEmployeeMobileNumber;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Getter
 @Setter
@@ -16,8 +14,11 @@ public class UsersDto {
     private String usersName;
     @NotBlank(message = "designation is mandatory")
     private String usersDesignation;
-    @NotNull
-    @Range(min = 100,max = 100000000,message="mobile no is mandatory")
+
+//    @Range(min=10000000,max =1000000000 ,message="mobile no is mandatory")
+//    @NotNull(message = "Please enter mobile number!")
+    //custom validation
+    @ValidateEmployeeMobileNumber(message = "Please Enter 10 digit mobile number")
     private  long usersMobileNo;
     @Email(message="Enter a valid email id")
     private String usersEmail;
