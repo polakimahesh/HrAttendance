@@ -2,6 +2,8 @@ package com.example.HrAttendance.Users;
 
 import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.security.core.userdetails.User;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +32,10 @@ public class Users {
     private String email;
 
     private String department;
+
     @Column(columnDefinition = "boolean default false")
     private Boolean isAdmin;
+
+
 
 }

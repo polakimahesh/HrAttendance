@@ -23,6 +23,7 @@ public class Admin {
     private int id;
     private String adminName;
     private String status;
+
     @CreationTimestamp
     private LocalDateTime approvedTime;
 }

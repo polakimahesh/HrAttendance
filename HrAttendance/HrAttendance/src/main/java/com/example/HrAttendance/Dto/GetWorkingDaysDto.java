@@ -12,5 +12,8 @@ public class GetWorkingDaysDto {
     private long countOfPresentDays;
     private  long countOfAbsentDays;
     private long countOfWeekEndDays;
+    private long countOfLeaves;
     private int totalWorkingDaysInMonth;
+
+
 }

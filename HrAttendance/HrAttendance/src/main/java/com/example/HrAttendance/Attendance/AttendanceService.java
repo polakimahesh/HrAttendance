@@ -70,7 +70,7 @@ public class AttendanceService {
             if (attendanceUser == null) {
                 attendance.setUserId(checkRequestDto.getUserId());
                 attendance.setDate(localDateTime);
-                attendance.setAttendanceStatus("present");
+                attendance.setAttendanceStatus("Present");
                 attendance.setInTime(localDateTime);
                 //attendance is saving into the repository
 
@@ -221,13 +221,14 @@ public class AttendanceService {
             }
 //            }
             getWorkingDaysDto.setAttendancePresentDaysDtoList(attendanceDaysDtoList);
-            getWorkingDaysDto.setCountOfPresentDays(attendanceDaysDtoList.stream().filter(presentDay ->
+            getWorkingDaysDto.setCountOfPresentDays(attendanceDaysDtoList.stream().filter(presentDay ->presentDay.getAttendanceStatus().equalsIgnoreCase("Present") &&
                             presentDay.getInTime().getDayOfWeek() != DayOfWeek.SATURDAY && presentDay.getInTime().getDayOfWeek() != DayOfWeek.SUNDAY)
                     .collect(Collectors.toList()).stream().count()
             );
             getWorkingDaysDto.setCountOfAbsentDays(date.getDayOfMonth() - getWorkingDaysDto.getCountOfPresentDays() - weekOfDays);
             getWorkingDaysDto.setTotalWorkingDaysInMonth(end.lengthOfMonth());
             getWorkingDaysDto.setCountOfWeekEndDays(weekOfDays);
+            getWorkingDaysDto.setCountOfLeaves(attendanceDaysDtoList.stream().filter(leaveDay-> leaveDay.getAttendanceStatus().equalsIgnoreCase("Approved")).count());
             response.put("isSuccess", true);
             response.put("message", getWorkingDaysDto);
         } else {
